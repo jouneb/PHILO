@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/04 16:37:18 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/05 14:43:21 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_global
 {
     //nombre de fois ou ils doivent boufffer si jamasi il y a ? pas sur que ce soit pertinent ici.
     //mutex sur les fourchettes;
+    // les parametres de l'enonce;
 
 }   t_global;
 
