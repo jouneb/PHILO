@@ -6,20 +6,26 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 16:25:44 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/06 17:21:47 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/07 17:30:58 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	print_fork(void)
+char	*print_fork(void)
 {
-	printf("has_taken_a_fork");
+	char *str;
+
+	str = "has taken a fork";
+	return(str);
 }
 
-void	print_eating(void)
+char	*print_eating(void)
 {
-	printf("is eating");
+	char *str;
+
+	str = "is eating";
+	return(str);
 }
 
 void	print_sleep(void)
