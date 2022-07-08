@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:08:02 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/07 17:53:22 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/08 12:27:47 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ t_philosopher	init_philo(t_global *params, int i)
 	philo.ID = i;
 	philo.right_fork = i;
 	philo.params = params;
+	philo.last_lunch = params->time_start;
 	if (i == params->nb_philos)
 		philo.left_fork = 1;
 	else
@@ -48,6 +49,7 @@ t_philosopher	init_philo(t_global *params, int i)
 	printf("quel philo ? %i\n", philo.ID);
 	printf("right fork ? %i\n", philo.right_fork);
 	printf("left fork ? %i\n", philo.left_fork);
+	printf("last_lunch ? %ld\n", philo.last_lunch);
 	return (philo);
 }
 
@@ -81,20 +83,6 @@ t_global	*init_dinner(char **argv)
 		init_mutex(params->philo[i], params);
 		i++;
 	}
-	// i = 1;
-	init_thread(params->philo);
-	// while(i <= params->nb_philos)
-	// {
-	// 	// params->philo[i] = init_philo(params, i);
-	// 	// init_mutex(params->philo[i], params);
-	// 	init_thread(params->philo[i]);
-	// 	i++;
-	// }
-	// while(i <= params->nb_philos)
-	// {
-	// 	pthread_join(philo, NULL);
-
-	// }
-	
+	init_thread(params);
 	return (params);
 }

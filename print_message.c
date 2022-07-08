@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/06 16:25:44 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/07 17:30:58 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/08 11:41:28 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,26 @@ char	*print_eating(void)
 	return(str);
 }
 
-void	print_sleep(void)
+char	*print_sleep(void)
 {
-	printf("is sleeping");
+	char *str;
+
+	str = "is sleeping";
+	return(str);
 }
 
-void	print_think(void)
+char	*print_think(void)
 {
-	printf("is thinking");
+	char *str;
+
+	str = "is thinking";
+	return(str);
 }
 
-void	print_died(void)
+char	*print_died(void)
 {
-	printf("died");
+	char *str;
+
+	str = "died";
+	return(str);
 }

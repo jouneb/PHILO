@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/07 17:52:34 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/08 12:14:03 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef struct s_philosopher
 	int				right_fork;
 	int				left_fork;
 	int				nb_lunch;
+	long int		last_lunch;
 	struct s_global	*params;
 }		t_philosopher;
 
@@ -44,7 +45,7 @@ int			ft_atoi(const char *s);
 t_global	*init_dinner(char **argv);
 int			check_args_digit(char **argv);
 void		init_mutex(t_philosopher philo, t_global *params);
-void		init_thread(t_philosopher *philo);
+void		init_thread(t_global *params);
 
 /*****************************/
 /*        MESSAGE            */
@@ -52,9 +53,9 @@ void		init_thread(t_philosopher *philo);
 
 char		*print_fork(void);
 char		*print_eating(void);
-void		print_sleep(void);
-void		print_think(void);
-void		print_died(void);
+char		*print_sleep(void);
+char		*print_think(void);
+char		*print_died(void);
 
 /*****************************/
 /*          TIME             */

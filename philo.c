@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/04 14:04:12 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/06 17:20:45 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/08 12:31:25 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@ int	main(int argc, char **argv)
 		return (printf("Arguments incorrects"));
 	params = init_dinner(argv);
 	(void) params;
+	// destroy_philo(params);
 	return (0);
 }
