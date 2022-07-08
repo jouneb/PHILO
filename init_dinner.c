@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:08:02 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/08 12:27:47 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/08 13:15:54 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ t_global	*init_dinner(char **argv)
 	params->time_to_die = ft_atoi(argv[2]);
 	params->time_to_eat = ft_atoi(argv[3]);
 	params->time_to_sleep = ft_atoi(argv[4]);
+	params->is_dead = 0;
 	printf("nb philo = %i\n", params->nb_philos);
 	printf("time to die =%i\n", params->time_to_die);
 	printf("time to eat = %i\n", params->time_to_eat);

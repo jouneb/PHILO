@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/08 12:14:03 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/08 13:15:04 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_global
 	int				time_to_sleep;
 	int				must_eat;
 	long int		time_start;
+	int				is_dead;
 	// pthread_mutex_t	global;
 	pthread_mutex_t	forks[250];
 }	t_global;
