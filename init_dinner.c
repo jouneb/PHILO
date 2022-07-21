@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:08:02 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/08 13:15:54 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/21 16:34:07 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ t_global	*init_dinner(char **argv)
 		init_mutex(params->philo[i], params);
 		i++;
 	}
-	init_thread(params);
+	pthread_mutex_init(&params->check_dead, NULL);
+	pthread_mutex_init(&params->check_dead, NULL);
+	// init_thread(params);
 	return (params);
 }

@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/08 13:15:04 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/21 18:00:47 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,10 @@ typedef struct s_global
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat;
+	int				count_who_is_full;
 	long int		time_start;
 	int				is_dead;
+	pthread_mutex_t check_dead;
 	// pthread_mutex_t	global;
 	pthread_mutex_t	forks[250];
 }	t_global;
@@ -46,7 +48,8 @@ int			ft_atoi(const char *s);
 t_global	*init_dinner(char **argv);
 int			check_args_digit(char **argv);
 void		init_mutex(t_philosopher philo, t_global *params);
-void		init_thread(t_global *params);
+void		*init_thread(void *params);
+int			food_is_life(t_philosopher *philo);
 
 /*****************************/
 /*        MESSAGE            */

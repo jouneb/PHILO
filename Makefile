@@ -6,7 +6,7 @@
 #    By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/06 13:13:41 by jbouyer           #+#    #+#              #
-#    Updated: 2022/07/07 17:22:04 by jbouyer          ###   ########.fr        #
+#    Updated: 2022/07/21 18:01:15 by jbouyer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,8 @@ SRC	=	philo.c \
 		utils.c \
 		print_message.c \
 		init_mutex.c \
-		init_thread.c
+		init_thread.c \
+		routine_utils.c
 
 #------------------------------------#
 #               OBJECTS              #
@@ -57,6 +58,7 @@ clean :
 fclean : 
 		rm -rf $(NAME) $(OBJ)
 
-re : fclean all
+re : fclean 
+	make all
 
 .PHONY: all clean fclean re
