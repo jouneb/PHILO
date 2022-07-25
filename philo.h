@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/21 18:00:47 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/25 14:48:41 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_philosopher
 typedef struct s_global
 {
 	t_philosopher	philo[250];
+	pthread_t		pthrd_philos[250];
 	int				nb_philos;
 	int				time_to_die;
 	int				time_to_eat;
@@ -39,9 +40,11 @@ typedef struct s_global
 	int				count_who_is_full;
 	long int		time_start;
 	int				is_dead;
+	pthread_mutex_t	write;
 	pthread_mutex_t check_dead;
-	// pthread_mutex_t	global;
+	pthread_mutex_t	m_global;
 	pthread_mutex_t	forks[250];
+	pthread_mutex_t	m_philo[250];
 }	t_global;
 
 int			ft_atoi(const char *s);
