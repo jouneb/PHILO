@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/26 16:32:00 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/26 17:50:48 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,16 @@ void		*init_thread(void *params);
 int			food_is_life(t_philosopher *philo);
 int			is_dead(t_global *params);
 int			is_dead_utils(t_philosopher *philo);
-int	food_is_life_reverse(t_philosopher *philo);
+int			food_is_life_reverse(t_philosopher *philo);
+
 
 /*****************************/
 /*        MESSAGE            */
 /*****************************/
 
-char		*print_fork(void);
-char		*print_eating(void);
+void		print_fork_right(t_philosopher *philo);
+void		print_fork_left(t_philosopher *philo);
+void		print_eating(t_philosopher *philo);
 char		*print_sleep(void);
 char		*print_think(void);
 char		*print_died(void);
