@@ -6,12 +6,22 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 16:25:34 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/25 15:20:45 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/26 16:44:01 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int	is_dead(t_global *params)
+{
+	int i;
+
+	i = 0;
+	pthread_mutex_lock(&params->m_global);
+	i = params->is_dead;
+	pthread_mutex_unlock(&params->m_global);
+	return (i);
+}
 // static int is_philo_max_lunch(t_global *params)
 // {
 // 	int	i;
@@ -37,15 +47,23 @@
 static void	*is_philo_dead_or_max_lunch(void *parameters)
 {
 	int			i;
+	long int	last_lunch;
+	int			time_to_die;
 
 	t_global	*params;
 	params = parameters;
+	pthread_mutex_lock(&params->m_global);
+	time_to_die = params->time_to_die;
+	pthread_mutex_unlock(&params->m_global);
 	while(1)
 	{
 		i = 1;
 		while(i <= params->nb_philos)
 		{
-			if ((get_time()- params->philo[i].last_lunch) > params->time_to_die)
+			pthread_mutex_lock(&params->m_global);
+			last_lunch = params->philo[i].last_lunch;
+			pthread_mutex_unlock(&params->m_global);
+			if ((get_time()- last_lunch) > time_to_die)
 			{
 				pthread_mutex_lock(&params->m_global);
 				params->is_dead = 1;
@@ -87,29 +105,42 @@ static void	*is_philo_dead_or_max_lunch(void *parameters)
 static void *routine(void *philo_args)
 {
 	t_philosopher	*philo;
+	int				ID;
 
 	philo = philo_args;
-	if (philo->ID % 2 == 0)
-		usleep(200);
-	//  while (philo->params->is_dead == 0)
+	pthread_mutex_lock(&philo->params->m_global);
+	ID = philo->ID;
+	pthread_mutex_unlock(&philo->params->m_global);
+	if (ID % 2 == 0)
+		usleep(350);
 	while (1)
 	{
-		if (food_is_life(philo) == 0)
+		if (ID % 2 == 0)
 		{
-			pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-			pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-			pthread_mutex_unlock(&philo->params->write);
-			break;
+			// usleep(350);
+			if (food_is_life_reverse(philo)== 0)
+				return (0);
 		}
-		if (philo->params->is_dead != 0)
+		else if (ID % 2 != 0)
+		{
+			if (food_is_life(philo)== 0)
+			// pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
+			// pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
+			return (0);
+			// pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
+			// pthread_mutex_unlock(&philo->params->write);
+			// break;
+		}
+		if (is_dead(philo->params) != 0)
 			return (0);
 		pthread_mutex_lock(&philo->params->write);
 		printf("%ld %i %s\n",(get_time() - philo->params->time_start), philo->ID, print_sleep());
 		pthread_mutex_unlock(&philo->params->write);
-		if (philo->params->is_dead != 0)
+		if (is_dead(philo->params) != 0)
+			// return(0);
 			break;
 		usleep((philo->params->time_to_sleep)*1000);
-		if (philo->params->is_dead != 0)
+		if (is_dead(philo->params) != 0)
 			return (0);
 		pthread_mutex_lock(&philo->params->write);
 		printf("%ld %i %s\n",(get_time() - philo->params->time_start), philo->ID, print_think());
@@ -122,13 +153,15 @@ void	*init_thread(void *parameters)
 {
 	pthread_t	death_status;
 	int			i;
+	int			nbr_philos;
 	t_global	*params;
 
 	params = parameters;
 	i = 1;
-	// while (params->is_dead == 0)
-	// {
-		while(i <= params->nb_philos)
+	pthread_mutex_lock(&params->m_global);
+	nbr_philos = params->nb_philos;
+	pthread_mutex_unlock(&params->m_global);
+		while(i <= nbr_philos)
 		{
 			// pthread_mutex_lock(&params->m_philo[i]);
 			pthread_create(&params->pthrd_philos[i], NULL, routine, &params->philo[i]);
@@ -136,14 +169,9 @@ void	*init_thread(void *parameters)
 			i++;
 		}
 		i = 1;
-		if (pthread_create(&death_status, NULL, is_philo_dead_or_max_lunch, params) == 0)
-		{
-			pthread_join(death_status, NULL);
-			return(0);
-			// break;
-		}
+		pthread_create(&death_status, NULL, is_philo_dead_or_max_lunch, params);
 		pthread_join(death_status, NULL);
-		while(i <= params->nb_philos)
+		while(i <= nbr_philos)
 		{
 			// pthread_mutex_lock(&params->m_philo[i]);
 			pthread_join(params->pthrd_philos[i], NULL);

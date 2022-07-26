@@ -6,13 +6,13 @@
 #    By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/06 13:13:41 by jbouyer           #+#    #+#              #
-#    Updated: 2022/07/21 18:01:15 by jbouyer          ###   ########.fr        #
+#    Updated: 2022/07/26 14:19:13 by jbouyer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-FLAGS = -Wall -Wextra -Werror -lpthread
+FLAGS = -Wall -Wextra -Werror -lpthread -g3
 
 #------------------------------------#
 #               SOURCES              #

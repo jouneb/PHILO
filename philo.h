@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/25 14:48:41 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/26 16:32:00 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ int			check_args_digit(char **argv);
 void		init_mutex(t_philosopher philo, t_global *params);
 void		*init_thread(void *params);
 int			food_is_life(t_philosopher *philo);
+int			is_dead(t_global *params);
+int			is_dead_utils(t_philosopher *philo);
+int	food_is_life_reverse(t_philosopher *philo);
 
 /*****************************/
 /*        MESSAGE            */

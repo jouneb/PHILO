@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:08:02 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/25 15:23:01 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/26 15:32:21 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ t_global	*init_dinner(char **argv)
 
 	i = 1;
 	params = malloc(sizeof(*params));
+	if (!params)
+		return(0);
 	if (params == NULL)
 		return (NULL);
 	params->nb_philos = ft_atoi(argv[1]);
