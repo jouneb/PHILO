@@ -6,7 +6,7 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/30 11:48:53 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/26 17:50:48 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/27 17:52:20 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <pthread.h>
-#include <sys/time.h>
+# include <sys/time.h>
 
 typedef struct s_philosopher
 {
-	int				ID;
+	int				id;
 	int				right_fork;
 	int				left_fork;
 	int				nb_lunch;
@@ -31,7 +31,7 @@ typedef struct s_philosopher
 typedef struct s_global
 {
 	t_philosopher	philo[250];
-	pthread_t		pthrd_philos[250];
+	pthread_t		pth_philo[250];
 	int				nb_philos;
 	int				time_to_die;
 	int				time_to_eat;
@@ -41,39 +41,39 @@ typedef struct s_global
 	long int		time_start;
 	int				is_dead;
 	pthread_mutex_t	write;
-	pthread_mutex_t check_dead;
+	pthread_mutex_t	check_dead;
 	pthread_mutex_t	m_global;
 	pthread_mutex_t	forks[250];
-	pthread_mutex_t	m_philo[250];
 }	t_global;
 
-int			ft_atoi(const char *s);
 t_global	*init_dinner(char **argv);
-int			check_args_digit(char **argv);
-void		init_mutex(t_philosopher philo, t_global *params);
+void		init_mutex_global(t_global *params);
 void		*init_thread(void *params);
 int			food_is_life(t_philosopher *philo);
 int			is_dead(t_global *params);
-int			is_dead_utils(t_philosopher *philo);
-int			food_is_life_reverse(t_philosopher *philo);
-
 
 /*****************************/
-/*        MESSAGE            */
+/*        MESSAGES            */
 /*****************************/
 
 void		print_fork_right(t_philosopher *philo);
 void		print_fork_left(t_philosopher *philo);
 void		print_eating(t_philosopher *philo);
-char		*print_sleep(void);
-char		*print_think(void);
-char		*print_died(void);
+void		enough_food(t_philosopher *philo);
+void		print_died(t_philosopher *philo);
 
 /*****************************/
 /*          TIME             */
 /*****************************/
 
-long int	convert_time(long int seconds, long int microseconds);
 long int	get_time(void);
+
+/*****************************/
+/*          UTILS            */
+/*****************************/
+
+int			ft_atoi(const char *s);
+int			check_args_digit(char **argv);
+int			is_dead_utils(t_philosopher *philo);
 
 #endif

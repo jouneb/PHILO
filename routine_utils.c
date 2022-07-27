@@ -6,137 +6,47 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:10:14 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/26 17:52:12 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/27 18:01:55 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-static int	take_a_fork(t_philosopher *philo)
-{
-	pthread_mutex_lock(&philo->params->forks[philo->right_fork]); //bloque la fourchette
-	if (is_dead(philo->params) != 0)
-	{
-		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-		return (0);
-	}
-	print_fork_right(philo);
-	// pthread_mutex_lock(&philo->params->write);
-	// printf("%ld %i has taken a fork right\n",(get_time() - 
-	// 		philo->params->time_start), philo->ID);
-	// pthread_mutex_unlock(&philo->params->write);
-	if (philo->params->nb_philos == 1) //faire exception pour le cas ou il n'y a qu'un philo. peut aller que dans les impairs.
-	{
-		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-		usleep(philo->params->time_to_die);
-		return(0);
-	}
-	pthread_mutex_lock(&philo->params->forks[philo->left_fork]); //bloque fourchette gauche
-	if (is_dead(philo->params) != 0)
-	{
-		pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-		return (0);
-	}
-	print_fork_left(philo);
-	return(1);
-	// pthread_mutex_lock(&philo->params->write);
-	// printf("%ld %i has taken a fork left\n",(get_time()- philo->params->time_start), philo->ID);
-	// pthread_mutex_unlock(&philo->params->write);
-}
-int	food_is_life(t_philosopher *philo)
-{
-	int	time_to_eat;
 
-	// pthread_mutex_lock(&philo->params->forks[philo->right_fork]); //bloque la fourchette
-	// if (is_dead(philo->params) != 0)
-	// {
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	return (0);
-	// }
-	// pthread_mutex_lock(&philo->params->write);
-	// printf("%ld %i has taken a fork right\n",(get_time() - 
-	// 		philo->params->time_start), philo->ID);
-	// pthread_mutex_unlock(&philo->params->write);
-	// if (philo->params->nb_philos == 1) //faire exception pour le cas ou il n'y a qu'un philo. peut aller que dans les impairs.
-	// {
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	usleep(philo->params->time_to_die);
-	// 	return(0);
-	// }
-	// pthread_mutex_lock(&philo->params->forks[philo->left_fork]); //bloque fourchette gauche
-	// if (is_dead(philo->params) != 0)
-	// {
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	return (0);
-	// }
-	// pthread_mutex_lock(&philo->params->write);
-	// printf("%ld %i has taken a fork left\n",(get_time() - philo->params->time_start), philo->ID);
-	// pthread_mutex_unlock(&philo->params->write);
-	if (take_a_fork(philo) == 0)
-		return(0);
+int	is_dead_utils(t_philosopher *philo)
+{
+	int	last_lunch;
+
 	pthread_mutex_lock(&philo->params->m_global);
-	philo->last_lunch = get_time();								//change heure du dernier lunch
+	last_lunch = philo->last_lunch;
 	pthread_mutex_unlock(&philo->params->m_global);
+	return (last_lunch);
+}
+
+static int	check_dead(t_philosopher *philo)
+{
 	if (is_dead(philo->params) != 0)
 	{
 		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
 		pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
 		return (0);
 	}
-	print_eating(philo);
-	// pthread_mutex_lock(&philo->params->write);
-	// printf("\033[32;01m%ld %i Is eating\033[00m\n",(get_time() - philo->params->time_start), philo->ID); //il mange
-	// pthread_mutex_unlock(&philo->params->write);
-	//fonction pour le tempsde bouffer//
-	pthread_mutex_lock(&philo->params->m_global);
-	time_to_eat = philo->params->time_to_eat;
-	pthread_mutex_unlock(&philo->params->m_global);
-	usleep(time_to_eat*1000);
-	// if (usleep(time_to_eat*1000) != 0)
-	// {
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-	// 	return(0);
-	// }
-	// if (is_dead(philo->params) != 0)
-	// {
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-	// 	return (0);
-	// }
-	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]); //commun aux deux trucs.
-	pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-	pthread_mutex_lock(&philo->params->m_global);
-	philo->nb_lunch++;
-	pthread_mutex_unlock(&philo->params->m_global);
 	return (1);
 }
 
-int	food_is_life_reverse(t_philosopher *philo)
+static int	take_a_fork(t_philosopher *philo)
 {
-	int	time_to_eat;
-
 	pthread_mutex_lock(&philo->params->forks[philo->left_fork]);
 	if (is_dead(philo->params) != 0)
 	{
 		pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
 		return (0);
 	}
-	// pthread_mutex_lock(&philo->params->forks[philo->right_fork]);
-	pthread_mutex_lock(&philo->params->write);
-	printf("%ld %i has taken a fork left\n",(get_time() - \
-			philo->params->time_start), philo->ID);
-	pthread_mutex_unlock(&philo->params->write);
-	// if (is_dead(philo->params) != 0)
-	// {		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	return (0);
-	// }
-	if (philo->params->nb_philos == 1) //faire exception pour le cas ou il n'y a qu'un philo.
+	print_fork_left(philo);
+	if (philo->params->nb_philos == 1)
 	{
 		pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
 		usleep(philo->params->time_to_die);
-		return(0);
+		return (0);
 	}
 	pthread_mutex_lock(&philo->params->forks[philo->right_fork]);
 	if (is_dead(philo->params) != 0)
@@ -145,39 +55,55 @@ int	food_is_life_reverse(t_philosopher *philo)
 		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
 		return (0);
 	}
-	pthread_mutex_lock(&philo->params->write);
-	printf("%ld %i has taken a fork right\n",(get_time() - \
-			philo->params->time_start), philo->ID);
-	pthread_mutex_unlock(&philo->params->write);
-	pthread_mutex_lock(&philo->params->m_global);
-	philo->last_lunch = get_time();
-	pthread_mutex_unlock(&philo->params->m_global);
+	print_fork_right(philo);
+	return (1);
+}
+
+static int	take_a_fork_right(t_philosopher *philo)
+{
+	pthread_mutex_lock(&philo->params->forks[philo->right_fork]);
 	if (is_dead(philo->params) != 0)
 	{
 		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-		pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
 		return (0);
 	}
-	pthread_mutex_lock(&philo->params->write);
-	printf("\033[32;01m%ld %i Is eating\033[00m\n",(get_time() - philo->params->time_start), philo->ID);
-	pthread_mutex_unlock(&philo->params->write);
-	//fonction pour le tempsde bouffer//
+	print_fork_right(philo);
+	if (philo->params->nb_philos == 1)
+	{
+		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
+		usleep(philo->params->time_to_die);
+		return (0);
+	}
+	pthread_mutex_lock(&philo->params->forks[philo->left_fork]);
+	if (is_dead(philo->params) != 0)
+	{
+		pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
+		pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
+		return (0);
+	}
+	print_fork_left(philo);
+	return (1);
+}
+
+int	food_is_life(t_philosopher *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		if (take_a_fork(philo) == 0)
+			return (0);
+	}
+	else
+	{
+		if (take_a_fork_right(philo) == 0)
+			return (0);
+	}
 	pthread_mutex_lock(&philo->params->m_global);
-	time_to_eat = philo->params->time_to_eat;
+	philo->last_lunch = get_time();
 	pthread_mutex_unlock(&philo->params->m_global);
-	usleep(time_to_eat*1000);
-	// if (usleep(time_to_eat*1000) != 0)
-	// {
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-	// 	return(0);
-	// }
-	// if (is_dead(philo->params) != 0)
-	// {
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
-	// 	pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
-	// 	return (0);
-	// }
+	if (check_dead(philo) == 0)
+		return (0);
+	print_eating(philo);
+	usleep(philo->params->time_to_eat * 1000);
 	pthread_mutex_unlock(&philo->params->forks[philo->right_fork]);
 	pthread_mutex_unlock(&philo->params->forks[philo->left_fork]);
 	pthread_mutex_lock(&philo->params->m_global);

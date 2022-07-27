@@ -6,14 +6,14 @@
 /*   By: jbouyer <jbouyer@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:08:02 by jbouyer           #+#    #+#             */
-/*   Updated: 2022/07/26 15:32:21 by jbouyer          ###   ########.fr       */
+/*   Updated: 2022/07/27 17:50:28 by jbouyer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <sys/time.h>
 
-long int	convert_time(long int seconds, long int microseconds)
+static long int	convert_time(long int seconds, long int microseconds)
 {
 	long int	current_time;
 
@@ -25,20 +25,20 @@ long int	convert_time(long int seconds, long int microseconds)
 
 long int	get_time(void)
 {
-	struct		timeval	current_time;
-	long int	converted_time;
+	long int		converted_time;
+	struct timeval	current_time;
 
 	gettimeofday(&current_time, NULL);
 	converted_time = convert_time(current_time.tv_sec, current_time.tv_usec);
 	return (converted_time);
 }
 
-t_philosopher	init_philo(t_global *params, int i)
+static t_philosopher	init_philo(t_global *params, int i)
 {
 	t_philosopher	philo;
 
 	philo.nb_lunch = 0;
-	philo.ID = i;
+	philo.id = i;
 	philo.right_fork = i;
 	philo.params = params;
 	philo.last_lunch = params->time_start;
@@ -46,11 +46,16 @@ t_philosopher	init_philo(t_global *params, int i)
 		philo.left_fork = 1;
 	else
 		philo.left_fork = i + 1;
-	printf("quel philo ? %i\n", philo.ID);
-	printf("right fork ? %i\n", philo.right_fork);
-	printf("left fork ? %i\n", philo.left_fork);
-	printf("last_lunch ? %ld\n", philo.last_lunch);
 	return (philo);
+}
+
+static void	fill_params(t_global *params, char **argv)
+{
+	params->nb_philos = ft_atoi(argv[1]);
+	params->time_to_die = ft_atoi(argv[2]);
+	params->time_to_eat = ft_atoi(argv[3]);
+	params->time_to_sleep = ft_atoi(argv[4]);
+	params->is_dead = 0;
 }
 
 t_global	*init_dinner(char **argv)
@@ -60,35 +65,20 @@ t_global	*init_dinner(char **argv)
 
 	i = 1;
 	params = malloc(sizeof(*params));
-	if (!params)
-		return(0);
-	if (params == NULL)
-		return (NULL);
-	params->nb_philos = ft_atoi(argv[1]);
-	params->time_to_die = ft_atoi(argv[2]);
-	params->time_to_eat = ft_atoi(argv[3]);
-	params->time_to_sleep = ft_atoi(argv[4]);
-	params->is_dead = 0;
-	printf("nb philo = %i\n", params->nb_philos);
-	printf("time to die =%i\n", params->time_to_die);
-	printf("time to eat = %i\n", params->time_to_eat);
-	printf("time_to_sleep = %i\n", params->time_to_sleep);
+	if (!params || params == NULL)
+		return (0);
+	fill_params(params, argv);
 	if (argv[5])
 		params->must_eat = ft_atoi(argv[5]);
 	else
 		params->must_eat = -1;
-	printf("nb must_eat = %i\n",params->must_eat);
 	params->time_start = get_time();
-	printf("time start = %ld\n", params->time_start);
-	while(i <= params->nb_philos)
+	while (i <= params->nb_philos)
 	{
 		params->philo[i] = init_philo(params, i);
-		init_mutex(params->philo[i], params);
+		pthread_mutex_init(&params->forks[params->philo[i].id], NULL);
 		i++;
 	}
-	pthread_mutex_init(&params->check_dead, NULL);
-	pthread_mutex_init(&params->m_global, NULL);
-	pthread_mutex_init(&params->write, NULL);
-	// init_thread(params);
+	init_mutex_global(params);
 	return (params);
 }
